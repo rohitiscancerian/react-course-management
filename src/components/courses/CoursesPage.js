@@ -1,9 +1,28 @@
 import React from "react";
 import { connect } from "react-redux";
 import * as courseActions from "../../redux/actions/courseActions";
+import * as authorActions from "../../redux/actions/authorActions";
 import PropTypes from "prop-types";
+import { bindActionCreators } from "redux";
+import CourseList from "./CourseList";
+//import { bindActionCreators } from "redux";
 
 class CoursePage extends React.Component {
+  componentDidMount() {
+    const { courses, authors, actions } = this.props;
+
+    if (courses.length === 0) {
+      actions.loadCourses().catch(error => {
+        alert("Loading courses failed" + error);
+      });
+    }
+
+    if (authors.length === 0) {
+      actions.loadAuthors().catch(error => {
+        alert("Loading authors failed" + error);
+      });
+    }
+  }
   constructor(props) {
     super(props);
 
@@ -29,32 +48,43 @@ class CoursePage extends React.Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <>
         <h2>Courses</h2>
-        <h3>Add Course</h3>
-        <input
-          type="text"
-          onChange={this.handleChange}
-          value={this.state.course.title}
-        />
-        <input type="submit" value="Save" />
-        {this.props.courses.map(course => (
-          <div key={course.title}>{course.title}</div>
-        ))}
-      </form>
+        <CourseList courses={this.props.courses} />
+      </>
     );
   }
 }
 
 CoursePage.propTypes = {
   courses: PropTypes.array.isRequired,
-  dispatch: PropTypes.func.isRequired
+  authors: PropTypes.array.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  actions: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {
   return {
-    courses: state.courses
+    courses:
+      state.authors.length === 0
+        ? []
+        : state.courses.map(item => {
+            return {
+              ...item,
+              authorName: state.authors.find(a => a.id === item.authorId).name
+            };
+          }),
+    authors: state.authors
   };
 }
 
-export default connect(mapStateToProps)(CoursePage);
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: {
+      loadCourses: bindActionCreators(courseActions.loadCourses, dispatch),
+      loadAuthors: bindActionCreators(authorActions.loadAuthors, dispatch)
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CoursePage);
