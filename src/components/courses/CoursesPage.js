@@ -11,7 +11,7 @@ import Spinner from "../common/Spinner";
 
 class CoursePage extends React.Component {
 
-  state = { redirectToAddCoursePage:false };
+  state = { redirectToAddCoursePage: false };
 
   componentDidMount() {
     const { courses, authors, actions } = this.props;
@@ -32,22 +32,22 @@ class CoursePage extends React.Component {
   render() {
     return (
       <>
-      {this.state.redirectToAddCoursePage && <Redirect to="/course" />}
+        {this.state.redirectToAddCoursePage && <Redirect to="/course" />}
         <h2>Courses</h2>
-        {this.props.loading ? 
-        <Spinner/> :
-        (
-        <>
-        <button
-          style={{ marginBottom:20}}
-          className="btn btn-primary add-course"
-          onClick={() => this.setState({redirectToAddCoursePage:true})}
-        >
-          Add Course
+        {this.props.loading ?
+          <Spinner /> :
+          (
+            <>
+              <button
+                style={{ marginBottom: 20 }}
+                className="btn btn-primary add-course"
+                onClick={() => this.setState({ redirectToAddCoursePage: true })}
+              >
+                Add Course
         </button>
-        <CourseList courses={this.props.courses} />
-        </>
-        )}
+              <CourseList courses={this.props.courses} />
+            </>
+          )}
       </>
     );
   }
@@ -61,19 +61,19 @@ CoursePage.propTypes = {
 };
 
 function mapStateToProps(state) {
-  
+
   return {
     courses:
       state.authors.length === 0
         ? []
         : state.courses.map(item => {
-            return {
-              ...item,
-              authorName: state.authors.find(a => a.id === item.authorId).name
-            };
-          }),
+          return {
+            ...item,
+            authorName: state.authors.find(a => a.id === item.authorId).name
+          };
+        }),
     authors: state.authors,
-    loading: state.apiCallsInProgress
+    loading: state.loading
   };
 }
 

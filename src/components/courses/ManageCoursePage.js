@@ -6,7 +6,8 @@ import PropTypes from "prop-types";
 import CourseForm from "./CourseForm";
 import newCourse from "../../../tools/mockData";
 
-function ManageCoursePage({ courses,
+function ManageCoursePage({
+  courses,
   authors,
   loadAuthors,
   loadCourses,
@@ -76,7 +77,7 @@ function mapStateToProps(state, ownProps) {
       ? getCourseBySlug(state.courses, slug)
       : newCourse;
   return {
-    course: newCourse,
+    course: course,
     courses: state.courses,
     authors: state.authors
   };
